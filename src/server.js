@@ -1,8 +1,10 @@
 import { createServer } from "node:http";
 import { providers } from "./data/providers.js";
 import { createComputePlan } from "./lib/planner.js";
+import { createJobReceipt } from "./lib/receipts.js";
 
 const jobs = new Map();
+const plans = new Map();
 
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, "http://localhost");
@@ -25,15 +27,24 @@ const server = createServer(async (request, response) => {
 
     if (request.method === "POST" && url.pathname === "/plan") {
       const body = await readJson(request);
-      return sendJson(response, 200, createComputePlan(providers, body));
+      const result = createComputePlan(providers, body);
+      plans.set(result.plan.id, result.plan);
+      return sendJson(response, 200, result);
     }
 
     if (request.method === "POST" && url.pathname === "/jobs") {
       const body = await readJson(request);
+      const plan = plans.get(body.planId);
+      if (!plan) {
+        return sendJson(response, 404, { error: "Plan not found" });
+      }
+
       const job = {
         id: `job_${Date.now()}`,
-        planId: body.planId,
+        planId: plan.id,
+        providerId: plan.selectedProvider.id,
         status: "waiting_for_approval",
+        approvalState: plan.approvalState,
         createdAt: new Date().toISOString()
       };
       jobs.set(job.id, job);
@@ -43,6 +54,25 @@ const server = createServer(async (request, response) => {
     if (request.method === "GET" && url.pathname.startsWith("/jobs/")) {
       const job = jobs.get(url.pathname.split("/").at(-1));
       return job ? sendJson(response, 200, job) : sendJson(response, 404, { error: "Job not found" });
+    }
+
+    if (request.method === "POST" && url.pathname.match(/^\/jobs\/[^/]+\/approve$/)) {
+      const jobId = url.pathname.split("/").at(-2);
+      const job = jobs.get(jobId);
+      if (!job) {
+        return sendJson(response, 404, { error: "Job not found" });
+      }
+
+      const plan = plans.get(job.planId);
+      const approved = {
+        ...job,
+        status: "approved",
+        approvalState: "approved",
+        approvedAt: new Date().toISOString()
+      };
+      approved.receipt = createJobReceipt({ job: approved, plan });
+      jobs.set(job.id, approved);
+      return sendJson(response, 200, approved);
     }
 
     return sendJson(response, 404, { error: "Route not found" });

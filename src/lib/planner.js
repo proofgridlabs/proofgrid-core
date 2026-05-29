@@ -1,9 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { selectProvider } from "./scoring.js";
 import { createPlanReceipt } from "./receipts.js";
+import { validatePlanRequest } from "./validation.js";
 
 export function createComputePlan(providers, request) {
-  const normalized = normalizeRequest(request);
+  const normalized = validatePlanRequest(request);
   const selected = selectProvider(providers, normalized);
 
   if (!selected) {
@@ -22,7 +23,8 @@ export function createComputePlan(providers, request) {
     trustScore: selected.trustScore,
     estimatedCostUsd: selected.provider.priceUsd,
     fallbackProviderId: findFallbackProvider(providers, selected.provider.id),
-    approvalState: "requires_user_approval",
+    approvalPolicy: normalized.approvalPolicy,
+    approvalState: normalized.approvalPolicy.required ? "requires_user_approval" : "preapproved",
     checks: [
       "provider_identity",
       "hardware_claim",
@@ -35,14 +37,6 @@ export function createComputePlan(providers, request) {
   return {
     plan,
     receipt: createPlanReceipt({ plan, provider: selected.provider })
-  };
-}
-
-function normalizeRequest(request) {
-  return {
-    task: request?.task || "inference",
-    budgetUsd: Number(request?.budgetUsd ?? 1),
-    requirements: request?.requirements || {}
   };
 }
 

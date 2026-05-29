@@ -4,6 +4,10 @@ import { createComputePlan } from "./lib/planner.js";
 const result = createComputePlan(providers, {
   task: "inference",
   budgetUsd: 1,
+  approvalPolicy: {
+    mode: "manual",
+    required: true
+  },
   requirements: {
     gpu: true,
     maxLatencyMs: 1200
