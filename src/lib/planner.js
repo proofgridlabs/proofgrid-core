@@ -18,7 +18,9 @@ export function createComputePlan(providers, request) {
       id: selected.provider.id,
       name: selected.provider.name,
       hardware: selected.provider.hardware,
-      region: selected.provider.region
+      region: selected.provider.region,
+      source: selected.provider.source || "native",
+      model: selected.provider.market?.model || null
     },
     trustScore: selected.trustScore,
     estimatedCostUsd: selected.provider.priceUsd,

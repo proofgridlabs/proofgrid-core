@@ -1,10 +1,18 @@
 import { createServer } from "node:http";
 import { providers } from "./data/providers.js";
+import { surplusMarkets } from "./data/surplus-markets.js";
+import { createSurplusAdapter } from "./adapters/surplus.js";
 import { createComputePlan } from "./lib/planner.js";
 import { createJobReceipt } from "./lib/receipts.js";
 
 const jobs = new Map();
 const plans = new Map();
+const surplus = createSurplusAdapter();
+
+const providerCatalog = [
+  ...providers,
+  ...surplusMarkets.map((market) => surplus.normalizeProvider(market))
+];
 
 const server = createServer(async (request, response) => {
   const url = new URL(request.url, "http://localhost");
@@ -15,19 +23,30 @@ const server = createServer(async (request, response) => {
     }
 
     if (request.method === "GET" && url.pathname === "/providers") {
-      return sendJson(response, 200, providers);
+      return sendJson(response, 200, providerCatalog);
     }
 
     if (request.method === "GET" && url.pathname.startsWith("/providers/")) {
-      const provider = providers.find((item) => item.id === url.pathname.split("/").at(-1));
+      const providerId = decodeURIComponent(url.pathname.split("/").at(-1));
+      const provider = providerCatalog.find((item) => item.id === providerId);
       return provider
         ? sendJson(response, 200, provider)
         : sendJson(response, 404, { error: "Provider not found" });
     }
 
+    if (request.method === "GET" && url.pathname === "/adapters/surplus") {
+      return sendJson(response, 200, {
+        id: surplus.id,
+        name: surplus.name,
+        configured: surplus.configured,
+        baseUrl: surplus.baseUrl,
+        markets: surplusMarkets.length
+      });
+    }
+
     if (request.method === "POST" && url.pathname === "/plan") {
       const body = await readJson(request);
-      const result = createComputePlan(providers, body);
+      const result = createComputePlan(providerCatalog, body);
       plans.set(result.plan.id, result.plan);
       return sendJson(response, 200, result);
     }
