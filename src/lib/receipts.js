@@ -18,7 +18,7 @@ export function createPlanReceipt({ plan, provider }) {
   };
 }
 
-export function createJobReceipt({ job, plan }) {
+export function createJobReceipt({ job, plan, executionIntent = null }) {
   const issuedAt = new Date().toISOString();
   const payload = {
     id: `receipt_${randomUUID()}`,
@@ -27,7 +27,9 @@ export function createJobReceipt({ job, plan }) {
     planId: plan.id,
     providerId: plan.selectedProvider.id,
     status: job.status,
-    approvalState: job.approvalState
+    approvalState: job.approvalState,
+    executionBackend: plan.executionBackend,
+    executionIntent
   };
 
   return {

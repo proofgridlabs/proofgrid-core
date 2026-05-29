@@ -28,11 +28,16 @@ const catalog = [
 
 const surplusResult = createComputePlan(catalog, {
   task: "inference",
-  budgetUsd: 0.3
+  budgetUsd: 0.3,
+  executionBackend: "surplus"
 });
 
 if (surplusResult.plan.selectedProvider.source !== "surplus") {
   throw new Error("Surplus provider selection smoke test failed");
+}
+
+if (surplusResult.plan.executionBackend !== "surplus") {
+  throw new Error("Surplus execution backend smoke test failed");
 }
 
 console.log(JSON.stringify(result, null, 2));

@@ -5,7 +5,8 @@ import { validatePlanRequest } from "./validation.js";
 
 export function createComputePlan(providers, request) {
   const normalized = validatePlanRequest(request);
-  const selected = selectProvider(providers, normalized);
+  const eligibleProviders = filterProviders(providers, normalized.executionBackend);
+  const selected = selectProvider(eligibleProviders, normalized);
 
   if (!selected) {
     throw new Error("No providers available");
@@ -25,6 +26,7 @@ export function createComputePlan(providers, request) {
     trustScore: selected.trustScore,
     estimatedCostUsd: selected.provider.priceUsd,
     fallbackProviderId: findFallbackProvider(providers, selected.provider.id),
+    executionBackend: selected.provider.source || "native",
     approvalPolicy: normalized.approvalPolicy,
     approvalState: normalized.approvalPolicy.required ? "requires_user_approval" : "preapproved",
     checks: [
@@ -40,6 +42,14 @@ export function createComputePlan(providers, request) {
     plan,
     receipt: createPlanReceipt({ plan, provider: selected.provider })
   };
+}
+
+function filterProviders(providers, executionBackend) {
+  if (executionBackend === "any") {
+    return providers;
+  }
+
+  return providers.filter((provider) => (provider.source || "native") === executionBackend);
 }
 
 function findFallbackProvider(providers, selectedId) {

@@ -77,6 +77,7 @@ const server = createServer(async (request, response) => {
 
     if (request.method === "POST" && url.pathname.match(/^\/jobs\/[^/]+\/approve$/)) {
       const jobId = url.pathname.split("/").at(-2);
+      const body = await readJson(request);
       const job = jobs.get(jobId);
       if (!job) {
         return sendJson(response, 404, { error: "Job not found" });
@@ -89,7 +90,17 @@ const server = createServer(async (request, response) => {
         approvalState: "approved",
         approvedAt: new Date().toISOString()
       };
-      approved.receipt = createJobReceipt({ job: approved, plan });
+
+      const executionIntent = plan.executionBackend === "surplus"
+        ? surplus.createExecutionIntent({
+            plan,
+            prompt: body.prompt || null,
+            maxTokens: body.maxTokens
+          })
+        : null;
+
+      approved.executionIntent = executionIntent;
+      approved.receipt = createJobReceipt({ job: approved, plan, executionIntent });
       jobs.set(job.id, approved);
       return sendJson(response, 200, approved);
     }

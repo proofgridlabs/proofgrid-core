@@ -33,6 +33,7 @@ Creates a proposed compute plan before execution.
 {
   "task": "inference",
   "budgetUsd": 1,
+  "executionBackend": "surplus",
   "approvalPolicy": {
     "mode": "manual",
     "required": true
@@ -61,6 +62,17 @@ Jobs start in `waiting_for_approval`.
 ## `POST /jobs/:id/approve`
 
 Approves a waiting job and returns a job receipt.
+
+For Surplus-backed plans, the approval response also includes an
+`executionIntent` object that can be used by a later live Surplus execution
+adapter.
+
+```json
+{
+  "prompt": "summarize this receipt",
+  "maxTokens": 512
+}
+```
 
 ## `GET /jobs/:id`
 

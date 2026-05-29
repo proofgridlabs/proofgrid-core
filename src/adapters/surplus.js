@@ -49,10 +49,14 @@ export function createExecutionIntent({ plan, prompt, maxTokens }) {
     backend: "surplus",
     providerId: plan.selectedProvider.id,
     model: plan.selectedProvider.model,
-    prompt,
+    input: {
+      prompt,
+      maxTokens: maxTokens || 512
+    },
     maxTokens: maxTokens || 512,
     approvalState: plan.approvalState,
-    proofgridPlanId: plan.id
+    proofgridPlanId: plan.id,
+    status: "ready_for_surplus_execution"
   };
 }
 

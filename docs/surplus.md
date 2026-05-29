@@ -31,6 +31,36 @@ GET /adapters/surplus
 Returns whether the adapter has credentials configured and how many sample
 markets are available locally.
 
+## Planning With Surplus
+
+Request a Surplus-backed route by setting `executionBackend`:
+
+```json
+{
+  "task": "inference",
+  "budgetUsd": 0.3,
+  "executionBackend": "surplus"
+}
+```
+
+The resulting plan includes:
+
+```json
+{
+  "executionBackend": "surplus",
+  "selectedProvider": {
+    "source": "surplus",
+    "model": "frontier-model"
+  }
+}
+```
+
+## Approval Intent
+
+Approving a Surplus-backed job returns an `executionIntent`. This is not a live
+Surplus API call yet. It is the object Proof Grid will hand to the live adapter
+once credentials and exact endpoint contracts are configured.
+
 ## Provider IDs
 
 Surplus markets are exposed as provider IDs prefixed with:
