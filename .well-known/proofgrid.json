@@ -1,0 +1,29 @@
+{
+  "name": "Proofgrid",
+  "description": "The verifiable compute layer for AI agents.",
+  "website": "https://proofgrid.local",
+  "agent_entry": "/llms.txt",
+  "api": {
+    "providers": "/providers",
+    "provider_detail": "/providers/{id}",
+    "plan": "/plan",
+    "jobs": "/jobs",
+    "job_detail": "/jobs/{id}"
+  },
+  "workflow": [
+    "discover compute providers",
+    "inspect trust signals",
+    "generate an execution plan",
+    "request user approval",
+    "execute the job",
+    "return a trust receipt"
+  ],
+  "trust_signals": [
+    "provider identity",
+    "hardware claim",
+    "benchmark history",
+    "uptime history",
+    "price quote",
+    "execution result hash"
+  ]
+}

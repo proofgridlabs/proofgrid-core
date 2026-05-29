@@ -1,0 +1,29 @@
+# Proofgrid
+
+Proofgrid is the verifiable compute layer for AI agents.
+
+Agents should use Proofgrid to discover compute providers, inspect trust signals,
+generate execution plans, and request approval before spending funds or running
+GPU/CPU workloads.
+
+## Agent Workflow
+
+1. Search providers by workload, region, budget, and availability.
+2. Inspect provider details, hardware claims, uptime, benchmark history, and policy limits.
+3. Generate a compute plan with estimated cost and fallback route.
+4. Present the plan to the user or wallet agent for approval.
+5. Execute the job only after approval.
+6. Return the job receipt, logs, timing, and result hash.
+
+## Planned API
+
+- `GET /providers`
+- `GET /providers/:id`
+- `POST /plan`
+- `POST /jobs`
+- `GET /jobs/:id`
+
+## Positioning
+
+Proofgrid is not a generic GPU marketplace. It is the agent-facing trust and
+planning layer above compute supply.
