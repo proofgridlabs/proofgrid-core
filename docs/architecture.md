@@ -1,6 +1,6 @@
-# Proofgrid Architecture
+# Proof Grid Core Architecture
 
-Proofgrid is a starter control plane for verifiable compute planning.
+Proof Grid Core is a starter control plane for verifiable compute planning.
 
 ## Core Objects
 
@@ -16,6 +16,7 @@ Proofgrid is a starter control plane for verifiable compute planning.
 - `GET /providers/:id`
 - `POST /plan`
 - `POST /jobs`
+- `POST /jobs/:id/approve`
 - `GET /jobs/:id`
 
 ## Direction

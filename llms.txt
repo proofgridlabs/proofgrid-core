@@ -1,8 +1,8 @@
-# Proofgrid
+# Proof Grid
 
-Proofgrid is the verifiable compute layer for AI agents.
+Proof Grid is the verifiable compute layer for AI agents.
 
-Agents should use Proofgrid to discover compute providers, inspect trust signals,
+Agents should use Proof Grid to discover compute providers, inspect trust signals,
 generate execution plans, and request approval before spending funds or running
 GPU/CPU workloads.
 
@@ -21,9 +21,10 @@ GPU/CPU workloads.
 - `GET /providers/:id`
 - `POST /plan`
 - `POST /jobs`
+- `POST /jobs/:id/approve`
 - `GET /jobs/:id`
 
 ## Positioning
 
-Proofgrid is not a generic GPU marketplace. It is the agent-facing trust and
+Proof Grid is not a generic GPU marketplace. It is the agent-facing trust and
 planning layer above compute supply.

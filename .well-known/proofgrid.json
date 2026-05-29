@@ -1,5 +1,5 @@
 {
-  "name": "Proofgrid",
+  "name": "Proof Grid",
   "description": "The verifiable compute layer for AI agents.",
   "website": "https://proofgrid.local",
   "agent_entry": "/llms.txt",

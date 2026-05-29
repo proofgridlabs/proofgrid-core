@@ -1,24 +1,21 @@
-# Compute AI API
+# Proof Grid Core API
 
-This is the starter API shape for the Compute AI beta.
+This is the starter API for Proof Grid's verifiable compute planning layer.
+
+## `GET /health`
+
+Returns service health.
+
+```json
+{
+  "ok": true,
+  "service": "proofgrid-api"
+}
+```
 
 ## `GET /providers`
 
-Returns available compute providers.
-
-```json
-[
-  {
-    "id": "node-7c9",
-    "name": "Northstar H100 Pool",
-    "hardware": "H100 class GPU",
-    "region": "us-east",
-    "uptime30d": 0.993,
-    "trustScore": 94,
-    "priceHint": "$0.38 / inference task"
-  }
-]
-```
+Returns available sample compute providers.
 
 ## `GET /providers/:id`
 
@@ -32,7 +29,10 @@ Creates a proposed compute plan before execution.
 {
   "task": "inference",
   "budgetUsd": 1,
-  "region": "us-east",
+  "approvalPolicy": {
+    "mode": "manual",
+    "required": true
+  },
   "requirements": {
     "gpu": true,
     "maxLatencyMs": 1200
@@ -40,10 +40,24 @@ Creates a proposed compute plan before execution.
 }
 ```
 
+The response includes a plan and hash-based plan receipt.
+
 ## `POST /jobs`
 
-Creates an approved compute job from a plan.
+Creates a job from an existing plan.
+
+```json
+{
+  "planId": "plan_..."
+}
+```
+
+Jobs start in `waiting_for_approval`.
+
+## `POST /jobs/:id/approve`
+
+Approves a waiting job and returns a job receipt.
 
 ## `GET /jobs/:id`
 
-Returns job status, execution logs, result hash, and trust receipt.
+Returns job status, approval state, provider ID, and receipt data when available.

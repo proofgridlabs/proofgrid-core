@@ -1,14 +1,15 @@
-﻿# Proofgrid Core
+# Proof Grid Core
 
-Proofgrid Core is the starter API for verifiable compute planning.
+Proof Grid Core is the starter API for verifiable compute planning.
 
-It models the first technical layer of Proofgrid:
+It models the first technical layer of Proof Grid:
 
 - provider discovery
 - provider trust scoring
 - compute plan generation
 - approval-first job creation
 - hash-based plan receipts
+- approval receipts
 
 ## API Prototype
 
@@ -28,8 +29,9 @@ Core routes:
 - `GET /providers/:id`
 - `POST /plan`
 - `POST /jobs`
+- `POST /jobs/:id/approve`
 - `GET /jobs/:id`
 
 ## Technical Direction
 
-Proofgrid Core starts with sample providers and in-memory jobs. The next steps are signed provider profiles, persistent plans and receipts, provider-side job runners, verifier checks, and approval policies before execution.
+Proof Grid Core starts with sample providers and in-memory jobs. The next steps are signed provider profiles, persistent plans and receipts, provider-side job runners, verifier checks, and approval policies before execution.
