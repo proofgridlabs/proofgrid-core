@@ -6,6 +6,7 @@ It models the first technical layer of Proof Grid:
 
 - provider discovery
 - provider trust scoring
+- Surplus market normalization
 - compute plan generation
 - approval-first job creation
 - hash-based plan receipts
@@ -27,6 +28,7 @@ Core routes:
 - `GET /health`
 - `GET /providers`
 - `GET /providers/:id`
+- `GET /adapters/surplus`
 - `POST /plan`
 - `POST /jobs`
 - `POST /jobs/:id/approve`

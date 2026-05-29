@@ -21,6 +21,10 @@ Returns available sample compute providers.
 
 Returns provider details, benchmark history, policy limits, and trust signals.
 
+## `GET /adapters/surplus`
+
+Returns Surplus adapter configuration status and local sample market count.
+
 ## `POST /plan`
 
 Creates a proposed compute plan before execution.
